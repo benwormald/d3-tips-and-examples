@@ -1,10 +1,11 @@
 $.getScript( "src/js/simple-linechart.js" );
 $.getScript( "src/js/simple-linechart-dash.js" );
 $.getScript( "src/js/simple-linechart-labeled.js" );
+$.getScript( "src/js/linechart-update.js" );
 
 var margin = {top: 50, right: 150, bottom: 80, left: 50},
     width = 640 - margin.left - margin.right,
-    height = 270 - margin.top - margin.bottom;
+    height = 320 - margin.top - margin.bottom;
 
 var parseDate = d3.time.format('%d-%b-%y').parse;
 //set ranges
