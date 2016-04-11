@@ -17,7 +17,7 @@ var valueline = d3.svg.line()
     .x(function(d) { return x(d.date); })
     .y(function(d) { return y(d.close); });
 
-var svg = d3.select('body')
+var svg = d3.select('.simple-linechart')
             .append('svg')
               .attr('width', width + margin.left + margin.right)
               .attr('height', height + margin.top + margin.bottom)
@@ -40,7 +40,7 @@ d3.csv('data.csv', function(error, data) {
 
   svg.append('g')
       .attr('class', 'x axis')
-      .attr('transform', 'translate(0,' + height + ')')
+      .attr('transform', 'translate(0,' + height + ')') //we need to move (transform) it to the bottom by a set amount
       .call(xAxis);
   svg.append('g')
       .attr('class', 'y axis')
