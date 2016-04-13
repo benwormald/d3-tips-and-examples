@@ -1,15 +1,27 @@
 // Define the line
+var bisectDate = d3.bisector(
+  function(d) {
+    return d.date;
+  }
+).left;
 
 var chart4 = d3.select('.linechart-update-data')
             .append('svg')
               .attr('width', width + margin.left + margin.right)
               .attr('height', height + margin.top + margin.bottom)
             .append('g')
-              .attr('transform', 'translate(' + margin.left + ',' + margin.top + ')')
+              .attr('transform', 'translate(' + margin.left + ',' + margin.top + ')');
+
+
 var valueline = d3.svg.line()
     .interpolate('monotone') //smooths line, makes steps, etc.
     .x(function(d) { return x(d.date); })
     .y(function(d) { return y(d.close); });
+
+var tooltip = d3.select('.linechart-update-data')
+            .append('div')
+            .attr('class', 'tooltip')
+            .style('opacity', 0);
 
 $('#option').change(function() {
   if ($(this).is(':checked')) {
@@ -20,11 +32,12 @@ $('#option').change(function() {
 })
 
 d3.csv('data.csv', function(error, data) {
+  if (error) throw error;
+  
   data.forEach(function(d) {
     d.date = parseDate(d.date);
     d.close = +d.close; //+ sets to a numeric value
   });
-
   //scale range of data
   x.domain(d3.extent(data, function(d) { return d.date }));
   y.domain([0, d3.max(data, function(d) {return d.close })]);
@@ -40,7 +53,15 @@ d3.csv('data.csv', function(error, data) {
   chart4.append('path')
       .attr('class', 'line')
       .style('stroke', 'rgb(85, 186, 159)')
-      .attr('d', valueline(data));
+      .attr('d', valueline(data))
+      .on('mouseover', function(d) {
+        tooltip.transition()
+                .duration(200)
+                .style('opacity', '.9');
+        tooltip.html(d.date + '</br>' + d.close)
+                .style('left', (d3.event.pageX) + 'px')
+                .style('top', (d3.event.pageY - 28) + 'px');
+      });
 
   chart4.append('g')
       .attr('class', 'x axis')
@@ -68,7 +89,6 @@ d3.csv('data.csv', function(error, data) {
 
 
 function updateData() {
-  console.log('gotta update');
   d3.csv("data-alt.csv", function(error, data) {
     data.forEach(function(d) {
     d.date = parseDate(d.date);
@@ -89,14 +109,10 @@ function updateData() {
       chart4.select(".x.axis") // change the x axis
           .duration(750)
           .call(xAxis);
-      chart4.select(".y.axis") // change the y axis
-          .duration(750)
-          .call(yAxis);
   });
 }
 
 function revertData() {
-  console.log('gotta update');
   d3.csv("data.csv", function(error, data) {
     data.forEach(function(d) {
     d.date = parseDate(d.date);
@@ -117,8 +133,5 @@ function revertData() {
       chart4.select(".x.axis") // change the x axis
           .duration(750)
           .call(xAxis);
-      chart4.select(".y.axis") // change the y axis
-          .duration(750)
-          .call(yAxis);
   });
 }

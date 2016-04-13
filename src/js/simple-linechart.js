@@ -55,4 +55,5 @@ d3.csv('data2.csv', function(error, data) {
       .attr('dy', '1em')
       .style('text-anchor', 'middle')
       .text('Value');
+  
 });
